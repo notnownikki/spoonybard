@@ -19,3 +19,13 @@ Next
 
 * UI auth by github
 * List of PRs and their status
+* Convert PR into jobs to run
+* Local runner provider
+* SSH runner provider
+* Register remote slave for SSH runner to use
+* Queue jobs
+* Dispatch jobs to runners
+* Monitor jobs
+* Collect console logs
+* Report success / failure to PR
+* Time based jobs

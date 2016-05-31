@@ -1,0 +1,2 @@
+class BaseTrigger(object):
+    pass
