@@ -1,8 +1,13 @@
-class Job(object):
-    def run(self):
-        pass
+import paramiko
 
 
-class JobFactory(object):
-    def create(self):
-        return Job()
+class Executor(object):
+    pass
+
+
+class SSHExecutor(Executor):
+    pass
+
+
+class LocalExecutor(Executor):
+    pass
