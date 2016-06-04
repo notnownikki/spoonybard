@@ -8,15 +8,17 @@ not a roadmap for public consuption.
 Right now
 ---------
 
+* Local executor
+* integration test that loads a job from yaml and runs it locally
+
+Next
+----
+
 * Accept incoming github PR notifications
 * Pull code for a PR into a local clone of the repo
   * Queue the change
   * Fetch the ref into local repo
   * Change must know how to update the status of the change (e.g. github, gerrit...)
-
-Next
-----
-
 * UI auth by github
 * List of PRs and their status
 * Convert PR into jobs to run
