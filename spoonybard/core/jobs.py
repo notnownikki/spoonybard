@@ -1,6 +1,7 @@
 import yaml
 from spoonybard import plugins
 
+
 class Job(object):
     def __init__(self):
         self.steps = []

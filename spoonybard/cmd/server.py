@@ -13,6 +13,7 @@ def _run_flask(plugin_list, host, port):
         importlib.import_module(plugin)
     app.run(host=host, port=port)
 
+
 def main():
     parser = argparse.ArgumentParser(description='Run the spoonybard server.')
     parser.add_argument('-c', help='Configuration file path')

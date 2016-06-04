@@ -1,6 +1,3 @@
-import paramiko
-
-
 class Executor(object):
     pass
 
