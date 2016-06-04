@@ -24,19 +24,27 @@ class PluginManagerTestCase(testtools.TestCase):
         shutil.rmtree('test_plugin', ignore_errors=True)
 
     def test_plugin_imported(self):
-        plugin = self.pluginmanager.get('test_plugin.things')
+        plugin = self.pluginmanager.get('test_plugin.things.funfunfun')
         self.assertEqual(
             'Default',
-            plugin.funfunfun())
+            plugin())
 
     def test_reload_plugin(self):
-        plugin = self.pluginmanager.get('test_plugin.things')
+        plugin = self.pluginmanager.get('test_plugin.things.funfunfun')
         self._create_test_plugin('New Code')
         self.assertEqual(
             'Default',
-            plugin.funfunfun())
+            plugin())
         self.pluginmanager.reload()
-        plugin = self.pluginmanager.get('test_plugin.things')
+        plugin = self.pluginmanager.get('test_plugin.things.funfunfun')
         self.assertEqual(
             'New Code',
-            plugin.funfunfun())
+            plugin())
+
+    def test_register_job_handler(self):
+        self.pluginmanager.register_job_handler(
+            'thing', 'test_plugin.things.funfunfun')
+        plugin = self.pluginmanager.get_job_handler('thing')
+        self.assertEqual(
+            'Default',
+            plugin())
