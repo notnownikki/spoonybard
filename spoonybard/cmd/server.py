@@ -3,6 +3,10 @@ import importlib
 import spoonybard
 from flask import Flask
 
+"""
+Another work in progress experiment here, will probably disappear.
+"""
+
 setattr(spoonybard, 'flaskapp', Flask('spoonybard'))
 
 
