@@ -41,6 +41,10 @@ class LocalExecutorTestCase(testtools.TestCase):
         self.assertFalse(
             os.path.exists(executor.tmp_script_filename))
 
+
+class SSHExecutorTestCase(testtools.TestCase):
+    pass
+
 # ==============================================
 # Dummy executors for testing core functionality
 

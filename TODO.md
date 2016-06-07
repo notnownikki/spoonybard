@@ -8,8 +8,8 @@ not a roadmap for public consuption.
 Right now
 ---------
 
-* Local executor
-* integration test that loads a job from yaml and runs it locally
+* Executor marked as in use
+* Job calls start and finish on executor
 
 Next
 ----
