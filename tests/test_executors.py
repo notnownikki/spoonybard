@@ -1,4 +1,5 @@
 import testtools
+import os
 from io import StringIO
 from spoonybard.core.executors import Executor, LocalExecutor
 
@@ -34,6 +35,11 @@ class LocalExecutorTestCase(testtools.TestCase):
         self.assertEqual(
             0,
             exit_code)
+    def test_executor_deletes_tmp_script(self):
+        executor = LocalExecutor()
+        executor.run(BASH_SCRIPT)
+        self.assertFalse(
+            os.path.exists(executor.tmp_script_filename))
 
 # ==============================================
 # Dummy executors for testing core functionality
