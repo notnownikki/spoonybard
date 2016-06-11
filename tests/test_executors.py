@@ -1,7 +1,8 @@
 import testtools
 import os
 from io import StringIO
-from spoonybard.core.executors import Executor, LocalExecutor
+from mock import patch, Mock
+from spoonybard.core.executors import Executor, LocalExecutor, SSHExecutor
 
 
 BASH_SCRIPT = """#!/bin/bash -e
@@ -42,15 +43,12 @@ class LocalExecutorTestCase(testtools.TestCase):
             os.path.exists(executor.tmp_script_filename))
 
 
-class SSHExecutorTestCase(testtools.TestCase):
-    pass
-
 # ==============================================
 # Dummy executors for testing core functionality
 
 class DummyExecutor(Executor):
     """just echoes back the script passed to run"""
-    def setup_stream(self, script):
+    def run_script(self, script):
         self.stream = StringIO(script)
 
     def get_exit_code(self):

@@ -8,8 +8,10 @@ class Job(object):
         self._exit_code = None
 
     def execute(self, executor):
+        executor.open()
         for step in self.steps:
             self._exit_code = self._exit_code or step.run(executor)
+        executor.close()
 
     def success(self):
         return self._exit_code == 0

@@ -85,6 +85,18 @@ class JobTestCase(testtools.TestCase):
             False,
             job.success())
 
+    def test_job_opens_and_closes_executor_once(self):
+        loader = JobLoader()
+        job = loader.load_yaml(JOB_MULTISTEP_YAML)
+        executor = DummyExecutor()
+        job.execute(executor)
+        self.assertEqual(
+            1,
+            executor.opened)
+        self.assertEqual(
+            1,
+            executor.closed)
+
 
 # ============================================
 # Dummy plugins and executors for use in tests
@@ -92,6 +104,14 @@ class JobTestCase(testtools.TestCase):
 class DummyExecutor(object):
     def __init__(self):
         self.script_executed = False
+        self.opened = 0
+        self.closed = 0
+
+    def open(self):
+        self.opened += 1
+
+    def close(self):
+        self.closed += 1
 
     def run(self, script):
         self.script_executed = script

@@ -10,8 +10,19 @@ class Executor(object):
         self.config = config
         self.log = []
 
+    def open(self):
+        """Opens any connections needed"""
+        pass
+
+    def close(self):
+        """Closes any open connections"""
+        pass
+
+    def run_script(self, script):
+        pass
+
     def run(self, script):
-        self.setup_stream(script)
+        self.run_script(script)
         line = self.stream.readline()
         while line:
             self.log.append(line)
@@ -26,8 +37,8 @@ class Executor(object):
 
 
 class SSHExecutor(Executor):
-    def setup_stream(self, script):
-        # connect using the key from the configuration
+    def open(self):
+        """Open the ssh connection"""
         key_str = io.StringIO(self.config['key'])
         pkey = paramiko.RSAKey.from_private_key(key_str)
         self.client = paramiko.SSHClient()
@@ -36,33 +47,57 @@ class SSHExecutor(Executor):
         self.client.connect(
             self.config['hostname'], username=self.config['username'],
             pkey=pkey, timeout=60, banner_timeout=60)
+        self.transport = self.client.get_transport()
+        self.transport.set_keepalive(60)
+        self.script_filename = self.get_tmp_script_filename()
 
-        # upload the script
-        script_filename = subprocess.check_output('mktemp', shell=True).strip()
+    def close(self):
+        """Close the ssh connection"""
         ftp = self.client.open_sftp()
-        file=ftp.file(script_filename, 'w', -1)
-        file.write(script)
+        ftp.remove(self.script_filename)
+        ftp.close()
+        self.client.close()
+
+    def upload_file(self, filename, content, mode=None):
+        ftp = self.client.open_sftp()
+        file = ftp.file(filename, 'w', -1)
+        file.write(content)
         file.flush()
-        ftp.chmod(script_filename, 0o744)
+        if mode:
+            ftp.chmod(self.script_filename, 0o744)
         ftp.close()
 
-        # run the script in a pty so we get all output in order
-        transport = self.client.get_transport()
-        transport.set_keepalive(60)
-        self.channel = channel = transport.open_session()
+    def get_tmp_script_filename(self):
+        channel = self.transport.open_session()
         channel.get_pty()
         out = channel.makefile()
-        channel.exec_command(script_filename)
+        channel.exec_command('mktemp')
+        tmpfilename = out.readline().strip()
+        channel.recv_exit_status()
+        channel.close()
+        return tmpfilename
+
+    def run_script(self, script):
+        # upload the script
+        self.upload_file(self.script_filename, script, 0o755)
+
+        # run the script in a pty so we get all output in order
+        channel = self.transport.open_session()
+        channel.get_pty()
+        out = channel.makefile()
+        channel.exec_command(self.script_filename)
+
+        self.channel = channel
         self.stream = out
 
     def get_exit_code(self):
         exit_code = self.channel.recv_exit_status()
-        self.client.close()
+        self.channel.close()
         return exit_code
 
 
 class LocalExecutor(Executor):
-    def setup_stream(self, script):
+    def run_script(self, script):
         fd, self.tmp_script_filename = tempfile.mkstemp()
         os.close(fd)
         f = open(self.tmp_script_filename, 'w')
