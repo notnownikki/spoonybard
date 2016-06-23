@@ -1,4 +1,4 @@
-from spoonybard import plugins
+from spoonybard import engine
 
 
 class ShellHandler(object):
@@ -9,5 +9,5 @@ class ShellHandler(object):
         return executor.run(self.script)
 
 
-plugins.register_job_handler(
-    'shell', 'spoonybard.core.handlers.ShellHandler')
+engine.plugins.register_job_handler(
+    'shell', ShellHandler)

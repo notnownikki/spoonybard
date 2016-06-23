@@ -1,8 +1,13 @@
-import importlib
+from spoonybard.core.engines import BardCore
 from spoonybard.core.managers import PluginManager, ConfigManager
+from spoonybard.core.webserver import WebServer
 
-plugins = PluginManager()
-config = ConfigManager()
+
+engine = BardCore()
+engine.plugins = PluginManager()
+engine.config = ConfigManager()
+engine.webserver = WebServer(PluginManager())
+
 
 # import core plugins
-importlib.import_module('spoonybard.core.handlers')
+engine.plugins.load('spoonybard.core.handlers')

@@ -1,5 +1,5 @@
 import yaml
-from spoonybard import plugins
+from spoonybard import engine
 
 
 class Job(object):
@@ -26,7 +26,7 @@ class JobLoader(object):
         job_steps = []
         for step in obj['steps']:
             handler_name = list(step.keys())[0]
-            plugin = plugins.get_job_handler(handler_name)
+            plugin = engine.plugins.get_job_handler(handler_name)
             job_steps.append(plugin(step[handler_name]))
         job = Job()
         job.steps = job_steps

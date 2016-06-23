@@ -1,6 +1,6 @@
 import testtools
 from spoonybard.core.jobs import JobLoader, Job
-from spoonybard import plugins
+from spoonybard import engine
 
 JOB_SCRIPT = "ls /"
 
@@ -134,7 +134,7 @@ class FailingJobLoaderTestPlugin(JobLoaderTestPlugin):
         self._exit_code = 127
 
 
-plugins.register_job_handler(
-    'script', 'tests.test_jobs.JobLoaderTestPlugin')
-plugins.register_job_handler(
-    'fail', 'tests.test_jobs.FailingJobLoaderTestPlugin')
+engine.plugins.register_job_handler(
+    'script', JobLoaderTestPlugin)
+engine.plugins.register_job_handler(
+    'fail', FailingJobLoaderTestPlugin)

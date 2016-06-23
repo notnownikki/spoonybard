@@ -1,50 +1,68 @@
 import os
 import shutil
 import testtools
+from types import ModuleType
+import spoonybard
 from spoonybard.core.managers import PluginManager
 
+
+PLUGIN_SRC = """
+from spoonybard import engine
+
+def funfunfun():
+    return "%s"
+
+engine.plugins.register_job_handler('testjh', funfunfun)
+"""
 
 class PluginManagerTestCase(testtools.TestCase):
     def _create_test_plugin(self, return_value):
         shutil.rmtree('test_plugin', ignore_errors=True)
         os.mkdir('test_plugin')
-        fp = open('test_plugin/__init__py', 'w')
-        fp.close()
-        fp = open('test_plugin/things.py', 'w')
-        fp.write('def funfunfun(): return "%s"' % return_value)
+        fp = open('test_plugin/__init__.py', 'w')
+        fp.write(PLUGIN_SRC % return_value)
         fp.close()
 
     def setUp(self):
         super(PluginManagerTestCase, self).setUp()
         self._create_test_plugin('Default')
-        self.pluginmanager = PluginManager()
+        spoonybard.engine.plugins.reload()
 
     def tearDown(self):
         super(PluginManagerTestCase, self).tearDown()
         shutil.rmtree('test_plugin', ignore_errors=True)
 
     def test_plugin_imported(self):
-        plugin = self.pluginmanager.get('test_plugin.things.funfunfun')
+        plugin = spoonybard.engine.plugins.load('test_plugin')
         self.assertEqual(
             'Default',
-            plugin())
+            plugin.funfunfun())
 
     def test_reload_plugin(self):
-        plugin = self.pluginmanager.get('test_plugin.things.funfunfun')
+        plugin = spoonybard.engine.plugins.load('test_plugin')
         self._create_test_plugin('New Code')
         self.assertEqual(
             'Default',
-            plugin())
-        self.pluginmanager.reload()
-        plugin = self.pluginmanager.get('test_plugin.things.funfunfun')
+            plugin.funfunfun())
+        spoonybard.engine.plugins.reload()
+        plugin = spoonybard.engine.plugins.load('test_plugin')
         self.assertEqual(
             'New Code',
-            plugin())
+            plugin.funfunfun())
 
     def test_register_job_handler(self):
-        self.pluginmanager.register_job_handler(
-            'thing', 'test_plugin.things.funfunfun')
-        plugin = self.pluginmanager.get_job_handler('thing')
+        plugin = spoonybard.engine.plugins.load('test_plugin')
+        handler = spoonybard.engine.plugins.get_job_handler('testjh')
         self.assertEqual(
             'Default',
-            plugin())
+            handler())
+
+    def test_job_handler_is_reloaded(self):
+        plugin = spoonybard.engine.plugins.load('test_plugin')
+        spoonybard.engine.plugins.register_job_handler('test', plugin.funfunfun)
+        self._create_test_plugin('Reloaded handler')
+        spoonybard.engine.plugins.reload()
+        handler = spoonybard.engine.plugins.get_job_handler('testjh')
+        self.assertEqual(
+            'Reloaded handler',
+            handler())
