@@ -1,2 +1,2 @@
-class BaseTrigger(object):
+class ChangeTrigger(object):
     pass

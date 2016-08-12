@@ -7,12 +7,26 @@ from spoonybard.core.managers import PluginManager
 
 
 PLUGIN_SRC = """
+import argparse
 from spoonybard import engine
+from spoonybard.core.commands import Command
+
 
 def funfunfun():
     return "%s"
 
 engine.plugins.register_job_handler('testjh', funfunfun)
+
+
+class DoThingCommand(Command):
+    def setup_parser(self):
+        self.parser.add_argument('--things', help='Things to do')
+
+    def execute(self):
+        return "%s"
+
+engine.plugins.register_command_handler('do-thing', DoThingCommand)
+
 """
 
 class PluginManagerTestCase(testtools.TestCase):
@@ -20,7 +34,7 @@ class PluginManagerTestCase(testtools.TestCase):
         shutil.rmtree('test_plugin', ignore_errors=True)
         os.mkdir('test_plugin')
         fp = open('test_plugin/__init__.py', 'w')
-        fp.write(PLUGIN_SRC % return_value)
+        fp.write(PLUGIN_SRC % (return_value, return_value))
         fp.close()
 
     def setUp(self):
@@ -66,3 +80,29 @@ class PluginManagerTestCase(testtools.TestCase):
         self.assertEqual(
             'Reloaded handler',
             handler())
+
+    def test_register_command_handler(self):
+        plugin = spoonybard.engine.plugins.load('test_plugin')
+        handler = spoonybard.engine.plugins.get_command_handler('do-thing')
+        self.assertEqual(
+            'Default',
+            handler.execute())
+
+    def test_command_handler_is_reloaded(self):
+        plugin = spoonybard.engine.plugins.load('test_plugin')
+        self._create_test_plugin('Reloaded command')
+        spoonybard.engine.plugins.reload()
+        handler = spoonybard.engine.plugins.get_command_handler('do-thing')
+        self.assertEqual(
+            'Reloaded command',
+            handler.execute())
+
+    def test_handlers_default_none(self):
+        handler = spoonybard.engine.plugins.get_job_handler('INVALID')
+        self.assertEqual(
+            None,
+            handler)
+        handler = spoonybard.engine.plugins.get_command_handler('INVALID')
+        self.assertEqual(
+            None,
+            handler)

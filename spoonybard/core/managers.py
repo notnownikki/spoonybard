@@ -27,6 +27,7 @@ class PluginManager(object):
     def reset(self):
         self.plugins = set()
         self.job_handlers = {}
+        self.command_handlers = {}
 
     def load(self, name, force_reload_if_unmanaged=False):
         if name in sys.modules and name not in self.plugins:
@@ -51,4 +52,13 @@ class PluginManager(object):
         self.job_handlers[handler_name] = handler
 
     def get_job_handler(self, name):
-        return self.job_handlers[name]
+        return self.job_handlers.get(name)
+
+    def register_command_handler(self, handler_name, handler):
+        self.command_handlers[handler_name] = handler
+
+    def get_command_handler(self, name):
+        klass = self.command_handlers.get(name)
+        if klass is None:
+            return
+        return klass(name)

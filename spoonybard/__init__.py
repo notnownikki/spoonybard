@@ -11,3 +11,4 @@ engine.webserver = WebServer(PluginManager())
 
 # import core plugins
 engine.plugins.load('spoonybard.core.handlers')
+engine.plugins.load('spoonybard.core.commands')

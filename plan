@@ -1,0 +1,19 @@
+Convert the ssh server stuff from prototype code to tested code.
+
+Make a github plugin to get PR and github events.
+
+Make a changeset that knows about the source of the change.
+
+Get jobs to run from the changeset. It should parse .bard.yml
+
+Put the jobs in a job queue.
+
+Have an executor pool.
+
+Each executor has host details.
+
+Make a scheduler that takes jobs, matches them with executors, and runs them.
+
+When all jobs for a changeset have been run, update the changeset.
+
+Changeset updates the source of the change.
