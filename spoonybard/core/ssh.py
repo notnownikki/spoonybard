@@ -14,6 +14,8 @@ command_timeout = 2
 
 
 class SSHHandler(socketserver.StreamRequestHandler):
+    server = None
+
     def handle(self, *args, **kwargs):
         t = paramiko.Transport(self.request)
         t.add_server_key(host_key)
