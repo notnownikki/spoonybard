@@ -46,7 +46,7 @@ class WebserverTestCase(testtools.TestCase):
     Sorry.
     """
     def setUp(self):
-        super(WebserverTestCase, self).setUp()
+        super().setUp()
         self.generated_plugins = []
         self.cfg_filename = '_test_webserver_cfg.yml'
 
@@ -60,7 +60,7 @@ class WebserverTestCase(testtools.TestCase):
         self.webserver.load(config)
 
     def tearDown(self):
-        super(WebserverTestCase, self).tearDown()
+        super().tearDown()
         os.remove(self.cfg_filename)
         path = os.path.dirname(__file__)
         for generated in self.generated_plugins:

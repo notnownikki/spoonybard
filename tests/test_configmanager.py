@@ -10,7 +10,7 @@ class ConfigManagerTestCase(testtools.TestCase):
         fp.close()
 
     def setUp(self):
-        super(ConfigManagerTestCase, self).setUp()
+        super().setUp()
         self._create_test_config('Default')
         self.configmanager = ConfigManager()
         self.configmanager.load('_test_config.yml')

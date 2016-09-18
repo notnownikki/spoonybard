@@ -38,12 +38,12 @@ class PluginManagerTestCase(testtools.TestCase):
         fp.close()
 
     def setUp(self):
-        super(PluginManagerTestCase, self).setUp()
+        super().setUp()
         self._create_test_plugin('Default')
         spoonybard.engine.plugins.reload()
 
     def tearDown(self):
-        super(PluginManagerTestCase, self).tearDown()
+        super().tearDown()
         shutil.rmtree('test_plugin', ignore_errors=True)
 
     def test_plugin_imported(self):

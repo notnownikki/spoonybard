@@ -21,7 +21,7 @@ class DummyChannel(object):
 
 class TestCommands(testtools.TestCase):
     def setUp(self):
-        super(TestCommands, self).setUp()
+        super().setUp()
         self.command = ExampleCommand('example')
         self.channel = DummyChannel()
 

@@ -60,7 +60,17 @@ class ListCommands(Command):
         channel.send('\n'.join(available) + '\n')
 
 
+class ReloadPluginsCommand(Command):
+    def execute(self, channel):
+        spoonybard.engine.plugins.reload()
+        channel.send('Plugins reloaded, yo!.\n')
+
+
 spoonybard.engine.plugins.register_command_handler(
     'help', HelpCommand)
 spoonybard.engine.plugins.register_command_handler(
     'list-commands', ListCommands)
+spoonybard.engine.plugins.register_command_handler(
+    'reload-plugins', ReloadPluginsCommand)
+
+print('commands')

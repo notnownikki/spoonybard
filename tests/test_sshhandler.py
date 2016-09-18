@@ -6,16 +6,19 @@ from spoonybard.core.ssh import SSHHandler
 
 class TestableHandler(SSHHandler):
 	def __init__(self):
+		# The SSHHandler is a stream request handler, that expects all
+		# kinds of request related things. Instead of mocking it, this
+		# class allows us to supply things in a more readable way.
+		# Don't judge me.
 		pass
 
 
 class SSHHandlerTestCase(testtools.TestCase):
 	def setUp(self):
-		super(SSHHandlerTestCase, self).setUp()
+		super().setUp()
 		self.sshhandler = TestableHandler()
 
-	@patch.object(paramiko, 'Transport')
-	def test_hostkey_added_from_configuration(self, mock_transport):
+	def test_hostkey_added_from_configuration(self):
 		pass
 
 	def test_getting_command_times_out(self):
