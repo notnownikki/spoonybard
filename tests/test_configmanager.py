@@ -16,7 +16,7 @@ class ConfigManagerTestCase(testtools.TestCase):
         self.configmanager.load('_test_config.yml')
 
     def tearDown(self):
-        super(ConfigManagerTestCase, self).tearDown()
+        super().tearDown()
         os.remove('_test_config.yml')
 
     def test_get_config(self):
